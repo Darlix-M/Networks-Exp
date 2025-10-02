@@ -10,6 +10,7 @@ import io.github.sefiraat.networks.managers.SupportedPluginManager;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -53,7 +54,7 @@ public class NetworkControlV extends NetworkDirectional {
 
     private final Set<BlockPosition> blockCache = new HashSet<>();
 
-    public static final ItemStack TEMPLATE_BACKGROUND_STACK = CustomItemStack.create(
+    public static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Paste items matching template"
     );
 

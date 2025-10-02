@@ -6,6 +6,7 @@ import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.slimefun.network.NetworkObject;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -42,27 +43,27 @@ import java.util.Map;
 
 public abstract class AbstractGrid extends NetworkObject {
 
-    private static final ItemStack BLANK_SLOT_STACK = CustomItemStack.create(
+    private static final ItemStack BLANK_SLOT_STACK = ItemCreator.create(
         Material.LIGHT_GRAY_STAINED_GLASS_PANE,
         " "
     );
 
-    private static final ItemStack PAGE_PREVIOUS_STACK = CustomItemStack.create(
+    private static final ItemStack PAGE_PREVIOUS_STACK = ItemCreator.create(
         Material.RED_STAINED_GLASS_PANE,
         Theme.CLICK_INFO.getColor() + "Previous Page"
     );
 
-    private static final ItemStack PAGE_NEXT_STACK = CustomItemStack.create(
+    private static final ItemStack PAGE_NEXT_STACK = ItemCreator.create(
         Material.RED_STAINED_GLASS_PANE,
         Theme.CLICK_INFO.getColor() + "Next Page"
     );
 
-    private static final ItemStack CHANGE_SORT_STACK = CustomItemStack.create(
+    private static final ItemStack CHANGE_SORT_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE,
         Theme.CLICK_INFO.getColor() + "Change Sort Order"
     );
 
-    private static final ItemStack FILTER_STACK = CustomItemStack.create(
+    private static final ItemStack FILTER_STACK = ItemCreator.create(
         Material.NAME_TAG,
         Theme.CLICK_INFO.getColor() + "Set Filter (Right Click to Clear)"
     );

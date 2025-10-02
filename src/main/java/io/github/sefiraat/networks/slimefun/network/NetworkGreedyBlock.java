@@ -2,6 +2,7 @@ package io.github.sefiraat.networks.slimefun.network;
 
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -32,12 +33,12 @@ public class NetworkGreedyBlock extends NetworkObject {
         6,7,8,15,17,24,25,26
     };
 
-    private static final ItemStack TEMPLATE_BACKGROUND_STACK = CustomItemStack.create(
+    private static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
         Material.GREEN_STAINED_GLASS_PANE,
         Theme.SUCCESS + "Store items matching"
     );
 
-    private static final ItemStack STORAGE_BACKGROUND_STACK = CustomItemStack.create(
+    private static final ItemStack STORAGE_BACKGROUND_STACK = ItemCreator.create(
         Material.ORANGE_STAINED_GLASS_PANE,
         Theme.SUCCESS + "Storage"
     );

@@ -5,6 +5,7 @@ import io.github.sefiraat.networks.network.GridItemRequest;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.SupportedRecipes;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -50,7 +51,7 @@ public class NetworkCraftingGrid extends AbstractGrid {
     private static final int CRAFT_BUTTON_SLOT = 34;
     private static final int CRAFT_OUTPUT_SLOT = 43;
 
-    private static final ItemStack CRAFT_BUTTON_STACK = CustomItemStack.create(
+    private static final ItemStack CRAFT_BUTTON_STACK = ItemCreator.create(
         Material.CRAFTING_TABLE,
         Theme.CLICK_INFO.getColor() + "Craft",
         Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Try to Craft",

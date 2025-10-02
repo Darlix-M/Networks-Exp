@@ -1,10 +1,7 @@
 package io.github.sefiraat.networks.slimefun.network;
 
 import io.github.sefiraat.networks.network.stackcaches.QuantumCache;
-import io.github.sefiraat.networks.utils.Keys;
-import io.github.sefiraat.networks.utils.StackUtils;
-import io.github.sefiraat.networks.utils.StringUtils;
-import io.github.sefiraat.networks.utils.Theme;
+import io.github.sefiraat.networks.utils.*;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
 import io.github.sefiraat.networks.utils.datatypes.PersistentQuantumStorageType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -16,7 +13,6 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.PersistentDataAPI;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
@@ -64,31 +60,31 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
     public static final int ITEM_SET_SLOT = 13;
     public static final int OUTPUT_SLOT = 7;
 
-    private static final ItemStack BACK_INPUT = CustomItemStack.create(
+    private static final ItemStack BACK_INPUT = ItemCreator.create(
         Material.GREEN_STAINED_GLASS_PANE,
         Theme.PASSIVE + "Input"
     );
 
-    private static final ItemStack BACK_ITEM = CustomItemStack.create(
+    private static final ItemStack BACK_ITEM = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE,
         Theme.PASSIVE + "Item Stored"
     );
 
-    private static final ItemStack NO_ITEM = CustomItemStack.create(
+    private static final ItemStack NO_ITEM = ItemCreator.create(
         Material.RED_STAINED_GLASS_PANE,
         Theme.ERROR + "No Registered Item",
         Theme.PASSIVE + "Click the icon below while",
         Theme.PASSIVE + "holding an item to register it."
     );
 
-    private static final ItemStack SET_ITEM = CustomItemStack.create(
+    private static final ItemStack SET_ITEM = ItemCreator.create(
         Material.LIME_STAINED_GLASS_PANE,
         Theme.SUCCESS + "Set Item",
         Theme.PASSIVE + "Drag an item on top of this pane to register it.",
         Theme.PASSIVE + "Shift Click to change voiding"
     );
 
-    private static final ItemStack BACK_OUTPUT = CustomItemStack.create(
+    private static final ItemStack BACK_OUTPUT = ItemCreator.create(
         Material.ORANGE_STAINED_GLASS_PANE,
         Theme.PASSIVE + "Output"
     );

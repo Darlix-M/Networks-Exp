@@ -5,6 +5,7 @@ import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -33,7 +34,7 @@ public class NetworkPowerDisplay extends NetworkObject {
     };
     private static final int DISPLAY_SLOT = 4;
 
-    private static final ItemStack EMPTY = CustomItemStack.create(
+    private static final ItemStack EMPTY = ItemCreator.create(
         Material.RED_STAINED_GLASS_PANE,
         Theme.CLICK_INFO + "Status",
         Theme.PASSIVE + "Disconnected"
@@ -99,7 +100,7 @@ public class NetworkPowerDisplay extends NetworkObject {
     }
 
     private static ItemStack getChargeStack(long charge) {
-        return CustomItemStack.create(
+        return ItemCreator.create(
             Material.GREEN_STAINED_GLASS_PANE,
             Theme.CLICK_INFO + "Status",
             Theme.PASSIVE + "Current Network Charge: " + charge + "j"

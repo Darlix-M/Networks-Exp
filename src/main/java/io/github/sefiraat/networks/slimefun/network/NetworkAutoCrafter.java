@@ -9,6 +9,7 @@ import io.github.sefiraat.networks.network.stackcaches.BlueprintInstance;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
 import io.github.sefiraat.networks.slimefun.tools.CraftingBlueprint;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.sefiraat.networks.utils.Theme;
@@ -52,11 +53,11 @@ public class NetworkAutoCrafter extends NetworkObject {
     private static final int BLUEPRINT_SLOT = 10;
     private static final int OUTPUT_SLOT = 16;
 
-    public static final ItemStack BLUEPRINT_BACKGROUND_STACK = CustomItemStack.create(
+    public static final ItemStack BLUEPRINT_BACKGROUND_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Crafting Blueprint"
     );
 
-    public static final ItemStack OUTPUT_BACKGROUND_STACK = CustomItemStack.create(
+    public static final ItemStack OUTPUT_BACKGROUND_STACK = ItemCreator.create(
         Material.GREEN_STAINED_GLASS_PANE, Theme.PASSIVE + "Output"
     );
 

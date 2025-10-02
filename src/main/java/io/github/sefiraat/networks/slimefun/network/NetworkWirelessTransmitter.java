@@ -5,6 +5,7 @@ import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -43,7 +44,7 @@ public class NetworkWirelessTransmitter extends NetworkObject {
         3, 4, 5, 12, 14, 21, 22, 23
     };
 
-    private static final ItemStack TEMPLATE_BACKGROUND_STACK = CustomItemStack.create(
+    private static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
         Material.GREEN_STAINED_GLASS_PANE,
         Theme.SUCCESS + "Transmit items matching"
     );

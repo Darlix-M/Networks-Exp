@@ -7,6 +7,7 @@ import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.network.SupportedRecipes;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
 import io.github.sefiraat.networks.slimefun.tools.CraftingBlueprint;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -48,11 +49,11 @@ public class NetworkEncoder extends NetworkObject {
 
     private static final int CHARGE_COST = 20000;
 
-    public static final ItemStack BLUEPRINT_BACK_STACK = CustomItemStack.create(
+    public static final ItemStack BLUEPRINT_BACK_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Blank Blueprint"
     );
 
-    public static final ItemStack ENCODE_STACK = CustomItemStack.create(
+    public static final ItemStack ENCODE_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Click to encode when valid"
     );
 

@@ -1,7 +1,6 @@
 package io.github.sefiraat.networks.utils;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;
@@ -42,7 +41,6 @@ public enum Theme {
     Theme(ChatColor color, String loreLine) {
         this.color = color;
         this.loreLine = loreLine;
-
     }
 
     @Nonnull
@@ -132,12 +130,10 @@ public enum Theme {
         }
         finalLore.add("");
         finalLore.add(applyThemeToString(Theme.CLICK_INFO, themeType.getLoreLine()));
-        return CustomItemStack.create(
+        return ItemCreator.create(
             material,
             Theme.applyThemeToString(themeType, name),
             finalLore.toArray(new String[finalLore.size() - 1])
         );
     }
-
-
 }

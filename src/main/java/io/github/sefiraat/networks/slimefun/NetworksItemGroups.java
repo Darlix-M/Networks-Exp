@@ -3,6 +3,7 @@ package io.github.sefiraat.networks.slimefun;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.slimefun.groups.DummyItemGroup;
 import io.github.sefiraat.networks.slimefun.groups.MainFlexGroup;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -20,7 +21,7 @@ public final class NetworksItemGroups {
 
     public static final MainFlexGroup MAIN = new MainFlexGroup(
         Keys.newKey("main"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.BLACK_STAINED_GLASS),
             Theme.MAIN.getColor() + "Networks"
         )
@@ -28,7 +29,7 @@ public final class NetworksItemGroups {
 
     public static final DummyItemGroup MATERIALS = new DummyItemGroup(
         Keys.newKey("materials"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.WHITE_STAINED_GLASS),
             Theme.MAIN.getColor() + "Crafting Materials"
         )
@@ -36,7 +37,7 @@ public final class NetworksItemGroups {
 
     public static final DummyItemGroup TOOLS = new DummyItemGroup(
         Keys.newKey("tools"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.PAINTING),
             Theme.MAIN.getColor() + "Network Management Tools"
         )
@@ -44,7 +45,7 @@ public final class NetworksItemGroups {
 
     public static final DummyItemGroup NETWORK_ITEMS = new DummyItemGroup(
         Keys.newKey("network_items"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.BLACK_STAINED_GLASS),
             Theme.MAIN.getColor() + "Network Items"
         )
@@ -52,7 +53,7 @@ public final class NetworksItemGroups {
 
     public static final DummyItemGroup NETWORK_QUANTUMS = new DummyItemGroup(
         Keys.newKey("network_quantums"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.WHITE_TERRACOTTA),
             Theme.MAIN.getColor() + "Network Quantum Storage Devices"
         )
@@ -60,7 +61,7 @@ public final class NetworksItemGroups {
 
     public static final ItemGroup DISABLED_ITEMS = new HiddenItemGroup(
         Keys.newKey("disabled_items"),
-        CustomItemStack.create(
+        ItemCreator.create(
             new ItemStack(Material.BARRIER),
             Theme.MAIN.getColor() + "Disabled/Removed Items"
         )

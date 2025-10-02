@@ -19,7 +19,7 @@ import java.util.List;
 
 public class NetworkCell extends NetworkObject {
 
-    private static final int[] SLOTS;
+    public static final int[] SLOTS;
 
     static {
         List<Integer> integers = new ArrayList<>();

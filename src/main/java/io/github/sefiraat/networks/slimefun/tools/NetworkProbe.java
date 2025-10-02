@@ -60,7 +60,6 @@ public class NetworkProbe extends SlimefunItem implements CanCooldown {
             final int exporters = root.getExporters().size();
             final int grids = root.getGrids().size();
             final int cells = root.getCells().size();
-            final int wipers = root.getWipers().size();
             final int grabbers = root.getGrabbers().size();
             final int pushers = root.getPushers().size();
             final int cutters = root.getCutters().size();
@@ -72,7 +71,6 @@ public class NetworkProbe extends SlimefunItem implements CanCooldown {
             final int powerOutlets = root.getPowerOutlets().size();
             final int powerDisplays = root.getPowerDisplays().size();
             final int encoders = root.getEncoders().size();
-            final int greedyBlocks = root.getGreedyBlockLocations().size();
             final int wirelessTransmitters = root.getWirelessTransmitters().size();
             final int wirelessReceivers = root.getWirelessReceivers().size();
             final long rootPower = root.getRootPower();
@@ -98,7 +96,6 @@ public class NetworkProbe extends SlimefunItem implements CanCooldown {
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Exporters", p, exporters}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Grids", p, grids}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Cells", p, cells}, new StringBuffer(), null).toString());
-            player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Wipers", p, wipers}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Grabbers", p, grabbers}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Pushers", p, pushers}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Cutters", p, cutters}, new StringBuffer(), null).toString());
@@ -110,7 +107,6 @@ public class NetworkProbe extends SlimefunItem implements CanCooldown {
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Power Outlets", p, powerOutlets}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Power Displays", p, powerDisplays}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Encoders", p, encoders}, new StringBuffer(), null).toString());
-            player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Greedy Blocks", p, greedyBlocks}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Wireless Transmitters", p, wirelessTransmitters}, new StringBuffer(), null).toString());
             player.sendMessage(MESSAGE_FORMAT.format(new Object[]{c, "Wireless Receivers", p, wirelessReceivers}, new StringBuffer(), null).toString());
 

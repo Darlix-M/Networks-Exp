@@ -4,6 +4,7 @@ import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -37,7 +38,7 @@ public class NetworkPusher extends NetworkDirectional {
     private static final int UP_SLOT = 14;
     private static final int DOWN_SLOT = 32;
 
-    public static final ItemStack TEMPLATE_BACKGROUND_STACK = CustomItemStack.create(
+    public static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
         Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Push items matching template"
     );
 

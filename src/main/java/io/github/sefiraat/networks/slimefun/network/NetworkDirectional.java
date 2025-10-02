@@ -2,6 +2,7 @@ package io.github.sefiraat.networks.slimefun.network;
 
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NodeType;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.NetworkUtils;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -314,7 +315,7 @@ public abstract class NetworkDirectional extends NetworkObject {
 
     @Nonnull
     public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull SlimefunItem slimefunItem, boolean active) {
-        final ItemStack displayStack = CustomItemStack.create(
+        final ItemStack displayStack = ItemCreator.create(
             slimefunItem.getItem(),
             Theme.PASSIVE + "Direction " + blockFace.name() + " (" + ChatColor.stripColor(slimefunItem.getItemName()) + ")"
         );
@@ -334,7 +335,7 @@ public abstract class NetworkDirectional extends NetworkObject {
     @Nonnull
     public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull Material blockMaterial, boolean active) {
         if (blockMaterial.isItem() && !blockMaterial.isAir()) {
-            final ItemStack displayStack = CustomItemStack.create(
+            final ItemStack displayStack = ItemCreator.create(
                 blockMaterial,
                 Theme.PASSIVE + "Direction " + blockFace.name() + " (" + blockMaterial.name() + ")"
             );
@@ -351,7 +352,7 @@ public abstract class NetworkDirectional extends NetworkObject {
             return displayStack;
         } else {
             Material material = active ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
-            return CustomItemStack.create(
+            return ItemCreator.create(
                 material,
                 ChatColor.GRAY + "Set direction: " + blockFace.name()
             );

@@ -1,6 +1,7 @@
 package io.github.sefiraat.networks.slimefun.network;
 
 import io.github.sefiraat.networks.network.stackcaches.QuantumCache;
+import io.github.sefiraat.networks.utils.ItemCreator;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
@@ -42,7 +43,7 @@ public class NetworkQuantumWorkbench extends SlimefunItem {
     private static final int CRAFT_SLOT = 23;
     private static final int OUTPUT_SLOT = 25;
 
-    private static final ItemStack CRAFT_BUTTON_STACK = CustomItemStack.create(
+    private static final ItemStack CRAFT_BUTTON_STACK = ItemCreator.create(
         Material.CRAFTING_TABLE,
         Theme.CLICK_INFO + "Click to entangle"
     );
