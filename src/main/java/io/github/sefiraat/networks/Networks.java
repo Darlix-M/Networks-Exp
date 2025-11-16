@@ -121,9 +121,6 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
                     ServerLevel level = cw.getHandle();
                     LevelLightEngine ll = level.chunkSource.getLightEngine();
 
-                    BlockStorage.clearBlockInfo(c);
-                    NetworkController.wipeNetwork(c);
-
                     Bukkit.getScheduler().runTask(this, () -> {
                         cw.dropItemNaturally(cb.getLocation(), Converter.getItem(NetworksSlimefunItemStacks.NETWORK_CONTROLLER));
 
@@ -131,6 +128,9 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
                         level.getMinecraftWorld().sendBlockUpdated(cb.getPosition(), cb.getNMS(), Blocks.AIR.defaultBlockState(), 3);
                         ll.checkBlock(cb.getPosition());
                     });
+
+                    BlockStorage.clearBlockInfo(c);
+                    NetworkUtils.clearNetwork(c);
                 }
             }
 

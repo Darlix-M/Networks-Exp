@@ -4,6 +4,7 @@ import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.slimefun.network.NetworkController;
 import io.github.sefiraat.networks.slimefun.network.NetworkPowerNode;
+import io.github.sefiraat.networks.utils.NetworkUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -117,6 +118,7 @@ public class NetworkNode {
     private void killAdditionalController(@Nonnull Location location) {
         if (BlockStorage.check(location) instanceof NetworkController) {
             Networks.getControllersSet().add(location);
+            NetworkUtils.clearNetwork(location);
         }
     }
 

@@ -16,11 +16,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 public class SyncListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onBlockBreak(@Nonnull BlockBreakEvent event) {
-        NetworkUtils.clearNetwork(event.getBlock().getLocation());
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(@Nonnull BlockPlaceEvent event) {
         NetworkUtils.clearNetwork(event.getBlock().getLocation());
