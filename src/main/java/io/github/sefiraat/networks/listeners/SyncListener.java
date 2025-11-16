@@ -1,19 +1,17 @@
 package io.github.sefiraat.networks.listeners;
 
-import javax.annotation.Nonnull;
-
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NodeDefinition;
+import io.github.sefiraat.networks.utils.NetworkUtils;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-
-import io.github.sefiraat.networks.utils.NetworkUtils;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+
+import javax.annotation.Nonnull;
 
 public class SyncListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

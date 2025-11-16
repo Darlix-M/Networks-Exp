@@ -5,7 +5,6 @@ import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
 import io.github.sefiraat.networks.utils.datatypes.PersistentCardInstanceType;
-import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -22,14 +21,14 @@ import javax.annotation.Nonnull;
 public class NetworkCard extends SlimefunItem {
 
     private static final int[] SIZES = new int[]{
-        4096,
-        32768,
-        262144,
-        2097152,
-        16777216,
-        134217728,
-        1073741824,
-        Integer.MAX_VALUE
+            4096,
+            32768,
+            262144,
+            2097152,
+            16777216,
+            134217728,
+            1073741824,
+            Integer.MAX_VALUE
     };
 
     private final int size;
@@ -57,10 +56,10 @@ public class NetworkCard extends SlimefunItem {
             if (cardItem instanceof NetworkCard networkCard) {
                 final ItemMeta cardMeta = card.getItemMeta();
                 final CardInstance cardInstance = DataTypeMethods.getCustom(
-                    cardMeta,
-                    Keys.CARD_INSTANCE,
-                    PersistentCardInstanceType.TYPE,
-                    new CardInstance(null, 0, networkCard.getSize())
+                        cardMeta,
+                        Keys.CARD_INSTANCE,
+                        PersistentCardInstanceType.TYPE,
+                        new CardInstance(null, 0, networkCard.getSize())
                 );
 
                 if (cardInstance.getAmount() > 0) {
@@ -76,17 +75,17 @@ public class NetworkCard extends SlimefunItem {
         });
     }
 
+    public static int[] getSizes() {
+        return SIZES;
+    }
+
     private boolean isBlacklisted(@Nonnull ItemStack itemStack) {
         return itemStack.getType() == Material.AIR
-            || itemStack.getType().getMaxDurability() < 0
-            || Tag.SHULKER_BOXES.isTagged(itemStack.getType());
+                || itemStack.getType().getMaxDurability() < 0
+                || Tag.SHULKER_BOXES.isTagged(itemStack.getType());
     }
 
     public int getSize() {
         return this.size;
-    }
-
-    public static int[] getSizes() {
-        return SIZES;
     }
 }

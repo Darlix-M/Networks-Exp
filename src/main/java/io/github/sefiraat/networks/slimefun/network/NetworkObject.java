@@ -4,7 +4,6 @@ import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
-import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -13,8 +12,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
-
 import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -36,19 +33,18 @@ import java.util.Set;
 
 public abstract class NetworkObject extends SlimefunItem implements AdminDebuggable {
 
+    protected static final Set<BlockFace> CHECK_FACES = Set.of(
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.SOUTH,
+            BlockFace.EAST,
+            BlockFace.WEST
+    );
     @Getter
     private final NodeType nodeType;
     @Getter
     private final List<Integer> slotsToDrop = new ArrayList<>();
-
-    protected static final Set<BlockFace> CHECK_FACES = Set.of(
-        BlockFace.UP,
-        BlockFace.DOWN,
-        BlockFace.NORTH,
-        BlockFace.SOUTH,
-        BlockFace.EAST,
-        BlockFace.WEST
-    );
 
 
     protected NetworkObject(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, NodeType type) {
@@ -59,32 +55,32 @@ public abstract class NetworkObject extends SlimefunItem implements AdminDebugga
         super(itemGroup, item, recipeType, recipe, recipeOutput);
         this.nodeType = type;
         addItemHandler(
-            new BlockTicker() {
+                new BlockTicker() {
 
-                @Override
-                public boolean isSynchronized() {
-                    return runSync();
-                }
+                    @Override
+                    public boolean isSynchronized() {
+                        return runSync();
+                    }
 
-                @Override
-                public void tick(Block b, SlimefunItem item, Config data) {
-                    addToRegistry(b);
-                }
-            },
-            new BlockBreakHandler(false, false) {
-                @Override
-                @ParametersAreNonnullByDefault
-                public void onPlayerBreak(BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
-                    preBreak(event);
-                    onBreak(event);
-                }
-            },
-            new BlockPlaceHandler(false) {
-                @Override
-                public void onPlayerPlace(@Nonnull BlockPlaceEvent blockPlaceEvent) {
-                    onPlace(blockPlaceEvent);
-                }
-            }, (ItemUseHandler) this::prePlace
+                    @Override
+                    public void tick(Block b, SlimefunItem item, Config data) {
+                        addToRegistry(b);
+                    }
+                },
+                new BlockBreakHandler(false, false) {
+                    @Override
+                    @ParametersAreNonnullByDefault
+                    public void onPlayerBreak(BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
+                        preBreak(event);
+                        onBreak(event);
+                    }
+                },
+                new BlockPlaceHandler(false) {
+                    @Override
+                    public void onPlayerPlace(@Nonnull BlockPlaceEvent blockPlaceEvent) {
+                        onPlace(blockPlaceEvent);
+                    }
+                }, (ItemUseHandler) this::prePlace
         );
     }
 

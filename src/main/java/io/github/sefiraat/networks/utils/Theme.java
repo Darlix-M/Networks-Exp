@@ -43,31 +43,6 @@ public enum Theme {
         this.loreLine = loreLine;
     }
 
-    @Nonnull
-    public Particle.DustOptions getDustOptions(float size) {
-        return new Particle.DustOptions(
-            Color.fromRGB(
-                color.getColor().getRed(),
-                color.getColor().getGreen(),
-                color.getColor().getBlue()
-            ),
-            size
-        );
-    }
-
-    /**
-     * Returns the name of this enum constant, as contained in the
-     * declaration.  This method may be overridden, though it typically
-     * isn't necessary or desirable.  An enum class should override this
-     * method when a more "programmer-friendly" string form exists.
-     *
-     * @return the name of this enum constant
-     */
-    @Override
-    public String toString() {
-        return this.color.toString();
-    }
-
     /**
      * Gets a SlimefunItemStack with a pre-populated lore and name with themed colors.
      *
@@ -90,10 +65,10 @@ public enum Theme {
         finalLore.add("");
         finalLore.add(applyThemeToString(Theme.CLICK_INFO, themeType.getLoreLine()));
         return new SlimefunItemStack(
-            id,
-            itemStack,
-            Theme.applyThemeToString(themeType, name),
-            finalLore.toArray(new String[finalLore.size() - 1])
+                id,
+                itemStack,
+                Theme.applyThemeToString(themeType, name),
+                finalLore.toArray(new String[finalLore.size() - 1])
         );
     }
 
@@ -131,9 +106,34 @@ public enum Theme {
         finalLore.add("");
         finalLore.add(applyThemeToString(Theme.CLICK_INFO, themeType.getLoreLine()));
         return ItemCreator.create(
-            material,
-            Theme.applyThemeToString(themeType, name),
-            finalLore.toArray(new String[finalLore.size() - 1])
+                material,
+                Theme.applyThemeToString(themeType, name),
+                finalLore.toArray(new String[finalLore.size() - 1])
         );
+    }
+
+    @Nonnull
+    public Particle.DustOptions getDustOptions(float size) {
+        return new Particle.DustOptions(
+                Color.fromRGB(
+                        color.getColor().getRed(),
+                        color.getColor().getGreen(),
+                        color.getColor().getBlue()
+                ),
+                size
+        );
+    }
+
+    /**
+     * Returns the name of this enum constant, as contained in the
+     * declaration.  This method may be overridden, though it typically
+     * isn't necessary or desirable.  An enum class should override this
+     * method when a more "programmer-friendly" string form exists.
+     *
+     * @return the name of this enum constant
+     */
+    @Override
+    public String toString() {
+        return this.color.toString();
     }
 }

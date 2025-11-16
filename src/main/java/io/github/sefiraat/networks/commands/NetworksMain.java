@@ -74,9 +74,9 @@ public class NetworksMain implements CommandExecutor {
 
         ItemMeta meta = itemStack.getItemMeta();
         final QuantumCache quantumCache = DataTypeMethods.getCustom(
-            meta,
-            Keys.QUANTUM_STORAGE_INSTANCE,
-            PersistentQuantumStorageType.TYPE
+                meta,
+                Keys.QUANTUM_STORAGE_INSTANCE,
+                PersistentQuantumStorageType.TYPE
         );
 
         if (quantumCache == null || quantumCache.getItemStack() == null) {

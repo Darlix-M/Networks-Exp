@@ -30,7 +30,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -42,31 +41,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class NetworkDirectional extends NetworkObject {
 
+    protected static final String DIRECTION = "direction";
+    protected static final String OWNER_KEY = "uuid";
     private static final int NORTH_SLOT = 12;
     private static final int SOUTH_SLOT = 30;
     private static final int EAST_SLOT = 22;
     private static final int WEST_SLOT = 20;
     private static final int UP_SLOT = 15;
     private static final int DOWN_SLOT = 33;
-
-    protected static final String DIRECTION = "direction";
-    protected static final String OWNER_KEY = "uuid";
-
     private static final Set<BlockFace> VALID_FACES = EnumSet.of(
-        BlockFace.UP,
-        BlockFace.DOWN,
-        BlockFace.NORTH,
-        BlockFace.EAST,
-        BlockFace.SOUTH,
-        BlockFace.WEST
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
     );
 
     private static final Map<Location, BlockFace> SELECTED_DIRECTION_MAP = new HashMap<>();
@@ -79,41 +72,92 @@ public abstract class NetworkDirectional extends NetworkObject {
         addItemSetting(this.tickRate);
 
         addItemHandler(
-            new BlockPlaceHandler(false) {
-                @Override
-                public void onPlayerPlace(@Nonnull BlockPlaceEvent event) {
-                    NetworkStorage.removeNode(event.getBlock().getLocation());
-                    BlockStorage.addBlockInfo(event.getBlock(), OWNER_KEY, event.getPlayer().getUniqueId().toString());
-                    BlockStorage.addBlockInfo(event.getBlock(), DIRECTION, BlockFace.SELF.name());
-                    NetworkUtils.applyConfig(NetworkDirectional.this, BlockStorage.getInventory(event.getBlock()), event.getPlayer());
-                }
-            },
-            new BlockTicker() {
+                new BlockPlaceHandler(false) {
+                    @Override
+                    public void onPlayerPlace(@Nonnull BlockPlaceEvent event) {
+                        NetworkStorage.removeNode(event.getBlock().getLocation());
+                        BlockStorage.addBlockInfo(event.getBlock(), OWNER_KEY, event.getPlayer().getUniqueId().toString());
+                        BlockStorage.addBlockInfo(event.getBlock(), DIRECTION, BlockFace.SELF.name());
+                        NetworkUtils.applyConfig(NetworkDirectional.this, BlockStorage.getInventory(event.getBlock()), event.getPlayer());
+                    }
+                },
+                new BlockTicker() {
 
-                private int tick = 1;
+                    private int tick = 1;
 
-                @Override
-                public boolean isSynchronized() {
-                    return runSync();
-                }
+                    @Override
+                    public boolean isSynchronized() {
+                        return runSync();
+                    }
 
-                @Override
-                public void tick(Block block, SlimefunItem slimefunItem, Config config) {
-                    if (tick <= 1) {
-                        final BlockMenu blockMenu = BlockStorage.getInventory(block);
-                        onTick(blockMenu, block);
+                    @Override
+                    public void tick(Block block, SlimefunItem slimefunItem, Config config) {
+                        if (tick <= 1) {
+                            final BlockMenu blockMenu = BlockStorage.getInventory(block);
+                            onTick(blockMenu, block);
+                        }
+                    }
+
+                    @Override
+                    public void uniqueTick() {
+                        tick = tick <= 1 ? tickRate.getValue() : tick - 1;
+                        if (tick <= 1) {
+                            onUniqueTick();
+                        }
                     }
                 }
-
-                @Override
-                public void uniqueTick() {
-                    tick = tick <= 1 ? tickRate.getValue() : tick - 1;
-                    if (tick <= 1) {
-                        onUniqueTick();
-                    }
-                }
-            }
         );
+    }
+
+    @Nonnull
+    public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull SlimefunItem slimefunItem, boolean active) {
+        final ItemStack displayStack = ItemCreator.create(
+                slimefunItem.getItem(),
+                Theme.PASSIVE + "Direction " + blockFace.name() + " (" + ChatColor.stripColor(slimefunItem.getItemName()) + ")"
+        );
+        final ItemMeta itemMeta = displayStack.getItemMeta();
+        if (active) {
+            itemMeta.addEnchant(XEnchantment.LUCK_OF_THE_SEA.get(), 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+        itemMeta.setLore(List.of(
+                Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
+                Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
+        ));
+        displayStack.setItemMeta(itemMeta);
+        return displayStack;
+    }
+
+    @Nonnull
+    public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull Material blockMaterial, boolean active) {
+        if (blockMaterial.isItem() && !blockMaterial.isAir()) {
+            final ItemStack displayStack = ItemCreator.create(
+                    blockMaterial,
+                    Theme.PASSIVE + "Direction " + blockFace.name() + " (" + blockMaterial.name() + ")"
+            );
+            final ItemMeta itemMeta = displayStack.getItemMeta();
+            if (active) {
+                itemMeta.addEnchant(XEnchantment.LUCK_OF_THE_SEA.get(), 1, true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            itemMeta.setLore(List.of(
+                    Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
+                    Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
+            ));
+            displayStack.setItemMeta(itemMeta);
+            return displayStack;
+        } else {
+            Material material = active ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
+            return ItemCreator.create(
+                    material,
+                    ChatColor.GRAY + "Set direction: " + blockFace.name()
+            );
+        }
+    }
+
+    @Nullable
+    public static BlockFace getSelectedFace(@Nonnull Location location) {
+        return SELECTED_DIRECTION_MAP.get(location);
     }
 
     private void updateGui(@Nullable BlockMenu blockMenu) {
@@ -128,23 +172,35 @@ public abstract class NetworkDirectional extends NetworkObject {
             final SlimefunItem slimefunItem = BlockStorage.check(block);
             if (slimefunItem != null) {
                 switch (blockFace) {
-                    case NORTH -> blockMenu.replaceExistingItem(getNorthSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
-                    case SOUTH -> blockMenu.replaceExistingItem(getSouthSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
-                    case EAST -> blockMenu.replaceExistingItem(getEastSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
-                    case WEST -> blockMenu.replaceExistingItem(getWestSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
-                    case UP -> blockMenu.replaceExistingItem(getUpSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
-                    case DOWN -> blockMenu.replaceExistingItem(getDownSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case NORTH ->
+                            blockMenu.replaceExistingItem(getNorthSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case SOUTH ->
+                            blockMenu.replaceExistingItem(getSouthSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case EAST ->
+                            blockMenu.replaceExistingItem(getEastSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case WEST ->
+                            blockMenu.replaceExistingItem(getWestSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case UP ->
+                            blockMenu.replaceExistingItem(getUpSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
+                    case DOWN ->
+                            blockMenu.replaceExistingItem(getDownSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
                     default -> throw new IllegalStateException("Unexpected value: " + blockFace);
                 }
             } else {
                 final Material material = block.getType();
                 switch (blockFace) {
-                    case NORTH -> blockMenu.replaceExistingItem(getNorthSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
-                    case SOUTH -> blockMenu.replaceExistingItem(getSouthSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
-                    case EAST -> blockMenu.replaceExistingItem(getEastSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
-                    case WEST -> blockMenu.replaceExistingItem(getWestSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
-                    case UP -> blockMenu.replaceExistingItem(getUpSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
-                    case DOWN -> blockMenu.replaceExistingItem(getDownSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case NORTH ->
+                            blockMenu.replaceExistingItem(getNorthSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case SOUTH ->
+                            blockMenu.replaceExistingItem(getSouthSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case EAST ->
+                            blockMenu.replaceExistingItem(getEastSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case WEST ->
+                            blockMenu.replaceExistingItem(getWestSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case UP ->
+                            blockMenu.replaceExistingItem(getUpSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
+                    case DOWN ->
+                            blockMenu.replaceExistingItem(getDownSlot(), getDirectionalSlotPane(blockFace, material, blockFace == direction));
                     default -> throw new IllegalStateException("Unexpected value: " + blockFace);
                 }
             }
@@ -168,7 +224,8 @@ public abstract class NetworkDirectional extends NetworkObject {
         updateGui(blockMenu);
     }
 
-    protected void onUniqueTick() {}
+    protected void onUniqueTick() {
+    }
 
     @Override
     public void postRegister() {
@@ -205,23 +262,23 @@ public abstract class NetworkDirectional extends NetworkObject {
                 SELECTED_DIRECTION_MAP.put(blockMenu.getLocation().clone(), direction);
 
                 blockMenu.addMenuClickHandler(getNorthSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.NORTH));
+                        directionClick(player, clickAction, blockMenu, BlockFace.NORTH));
                 blockMenu.addMenuClickHandler(getSouthSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.SOUTH));
+                        directionClick(player, clickAction, blockMenu, BlockFace.SOUTH));
                 blockMenu.addMenuClickHandler(getEastSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.EAST));
+                        directionClick(player, clickAction, blockMenu, BlockFace.EAST));
                 blockMenu.addMenuClickHandler(getWestSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.WEST));
+                        directionClick(player, clickAction, blockMenu, BlockFace.WEST));
                 blockMenu.addMenuClickHandler(getUpSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.UP));
+                        directionClick(player, clickAction, blockMenu, BlockFace.UP));
                 blockMenu.addMenuClickHandler(getDownSlot(), (player, i, itemStack, clickAction) ->
-                    directionClick(player, clickAction, blockMenu, BlockFace.DOWN));
+                        directionClick(player, clickAction, blockMenu, BlockFace.DOWN));
             }
 
             @Override
             public boolean canOpen(@Nonnull Block block, @Nonnull Player player) {
                 return this.getSlimefunItem().canUse(player, false)
-                    && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
+                        && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
             @Override
@@ -252,7 +309,7 @@ public abstract class NetworkDirectional extends NetworkObject {
             final Location location = targetMenu.getLocation();
             final SlimefunItem item = BlockStorage.check(location);
             if (item.canUse(player, true)
-                && Slimefun.getProtectionManager().hasPermission(player, blockMenu.getLocation(), Interaction.INTERACT_BLOCK)
+                    && Slimefun.getProtectionManager().hasPermission(player, blockMenu.getLocation(), Interaction.INTERACT_BLOCK)
             ) {
                 targetMenu.open(player);
             }
@@ -268,7 +325,7 @@ public abstract class NetworkDirectional extends NetworkObject {
     @Nonnull
     protected int[] getBackgroundSlots() {
         return new int[]{
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 16, 17, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 21, 31, 32, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 16, 17, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29, 21, 31, 32, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
         };
     }
 
@@ -310,59 +367,12 @@ public abstract class NetworkDirectional extends NetworkObject {
         return new int[]{};
     }
 
-    public int[] getInputSlots() { return new int[0]; }
-
-    public int[] getOutputSlots() { return new int[0]; }
-
-    @Nonnull
-    public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull SlimefunItem slimefunItem, boolean active) {
-        final ItemStack displayStack = ItemCreator.create(
-            slimefunItem.getItem(),
-            Theme.PASSIVE + "Direction " + blockFace.name() + " (" + ChatColor.stripColor(slimefunItem.getItemName()) + ")"
-        );
-        final ItemMeta itemMeta = displayStack.getItemMeta();
-        if (active) {
-            itemMeta.addEnchant(XEnchantment.LUCK_OF_THE_SEA.get(), 1, true);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-        itemMeta.setLore(List.of(
-            Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
-            Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
-        ));
-        displayStack.setItemMeta(itemMeta);
-        return displayStack;
+    public int[] getInputSlots() {
+        return new int[0];
     }
 
-    @Nonnull
-    public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull Material blockMaterial, boolean active) {
-        if (blockMaterial.isItem() && !blockMaterial.isAir()) {
-            final ItemStack displayStack = ItemCreator.create(
-                blockMaterial,
-                Theme.PASSIVE + "Direction " + blockFace.name() + " (" + blockMaterial.name() + ")"
-            );
-            final ItemMeta itemMeta = displayStack.getItemMeta();
-            if (active) {
-                itemMeta.addEnchant(XEnchantment.LUCK_OF_THE_SEA.get(), 1, true);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            }
-            itemMeta.setLore(List.of(
-                Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
-                Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
-            ));
-            displayStack.setItemMeta(itemMeta);
-            return displayStack;
-        } else {
-            Material material = active ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
-            return ItemCreator.create(
-                material,
-                ChatColor.GRAY + "Set direction: " + blockFace.name()
-            );
-        }
-    }
-
-    @Nullable
-    public static BlockFace getSelectedFace(@Nonnull Location location) {
-        return SELECTED_DIRECTION_MAP.get(location);
+    public int[] getOutputSlots() {
+        return new int[0];
     }
 
     protected Particle.DustOptions getDustOptions() {

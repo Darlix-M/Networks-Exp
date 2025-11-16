@@ -25,9 +25,13 @@ public class SupportedPluginManager {
         this.netheopoiesis = Bukkit.getPluginManager().isPluginEnabled("Netheopoiesis");
         this.slimeHud = Bukkit.getPluginManager().isPluginEnabled("SlimeHUD");
         Networks.getInstance()
-            .getServer()
-            .getScheduler()
-            .runTaskLater(Networks.getInstance(), this::firstTickRegistrations, 1);
+                .getServer()
+                .getScheduler()
+                .runTaskLater(Networks.getInstance(), this::firstTickRegistrations, 1);
+    }
+
+    public static SupportedPluginManager getInstance() {
+        return instance;
     }
 
     private void firstTickRegistrations() {
@@ -53,9 +57,5 @@ public class SupportedPluginManager {
 
     public boolean isWildChests() {
         return wildChests;
-    }
-
-    public static SupportedPluginManager getInstance() {
-        return instance;
     }
 }

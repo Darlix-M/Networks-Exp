@@ -21,21 +21,21 @@ public class NetworkCrayon extends SlimefunItem {
     public NetworkCrayon(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
         addItemHandler(
-            new ItemUseHandler() {
-                @Override
-                public void onRightClick(PlayerRightClickEvent e) {
-                    final Optional<Block> optional = e.getClickedBlock();
-                    if (optional.isPresent()) {
-                        final Block block = optional.get();
-                        final Player player = e.getPlayer();
-                        final SlimefunItem slimefunItem = BlockStorage.check(block);
-                        if (slimefunItem instanceof NetworkController) {
-                            toggleCrayon(block, player);
-                            e.cancel();
+                new ItemUseHandler() {
+                    @Override
+                    public void onRightClick(PlayerRightClickEvent e) {
+                        final Optional<Block> optional = e.getClickedBlock();
+                        if (optional.isPresent()) {
+                            final Block block = optional.get();
+                            final Player player = e.getPlayer();
+                            final SlimefunItem slimefunItem = BlockStorage.check(block);
+                            if (slimefunItem instanceof NetworkController) {
+                                toggleCrayon(block, player);
+                                e.cancel();
+                            }
                         }
                     }
                 }
-            }
         );
     }
 

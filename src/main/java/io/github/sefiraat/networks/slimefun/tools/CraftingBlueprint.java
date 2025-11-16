@@ -26,11 +26,6 @@ public class CraftingBlueprint extends UnplaceableBlock implements DistinctiveIt
         super(itemGroup, item, recipeType, recipe);
     }
 
-    @Override
-    public boolean canStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo) {
-        return itemMetaOne.getPersistentDataContainer().equals(itemMetaTwo.getPersistentDataContainer());
-    }
-
     @ParametersAreNonnullByDefault
     public static void setBlueprint(ItemStack blueprint, ItemStack[] recipe, ItemStack output) {
         final ItemMeta itemMeta = blueprint.getItemMeta();
@@ -64,6 +59,11 @@ public class CraftingBlueprint extends UnplaceableBlock implements DistinctiveIt
         itemMeta.setLore(lore);
 
         blueprint.setItemMeta(itemMeta);
+    }
+
+    @Override
+    public boolean canStack(@Nonnull ItemMeta itemMetaOne, @Nonnull ItemMeta itemMetaTwo) {
+        return itemMetaOne.getPersistentDataContainer().equals(itemMetaTwo.getPersistentDataContainer());
     }
 
 }

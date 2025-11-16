@@ -19,9 +19,9 @@ import java.util.Map;
 public class BlockMenuUtil {
     @Nullable
     public static ItemStack pushItem(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final ItemStack item,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final ItemStack item,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return null;
             // throw new IllegalArgumentException("Cannot push null or AIR");
@@ -67,9 +67,9 @@ public class BlockMenuUtil {
 
     @NotNull
     public static Map<ItemStack, Integer> pushItem(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final ItemStack @NotNull [] items,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final ItemStack @NotNull [] items,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (items.length == 0) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty array");
@@ -87,9 +87,9 @@ public class BlockMenuUtil {
 
     @NotNull
     public static Map<ItemStack, Integer> pushItem(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final List<ItemStack> items,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final List<ItemStack> items,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (items == null || items.isEmpty()) {
             return new HashMap<>();
             // throw new IllegalArgumentException("Cannot push null or empty list");
@@ -109,9 +109,9 @@ public class BlockMenuUtil {
     }
 
     public static boolean fits(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final ItemStack item,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final ItemStack item,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (item == null || item.getType() == Material.AIR) {
             return true;
         }
@@ -135,9 +135,9 @@ public class BlockMenuUtil {
     }
 
     public static boolean fits(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final ItemStack @Nullable [] items,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final ItemStack @Nullable [] items,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (items == null || items.length == 0) {
             return false;
         }
@@ -153,9 +153,9 @@ public class BlockMenuUtil {
     }
 
     public static boolean fits(
-        @NotNull final BlockMenu blockMenu,
-        @Nullable final List<ItemStack> items,
-        @Range(from = 0, to = 53) final int @NotNull ... slots) {
+            @NotNull final BlockMenu blockMenu,
+            @Nullable final List<ItemStack> items,
+            @Range(from = 0, to = 53) final int @NotNull ... slots) {
         if (items == null || items.isEmpty()) {
             return false;
         }

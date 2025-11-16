@@ -1,7 +1,6 @@
 package io.github.sefiraat.networks.utils;
 
 import de.jeff_media.morepersistentdatatypes.DataType;
-
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkNode;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -13,7 +12,6 @@ import io.github.sefiraat.networks.slimefun.tools.NetworkConfigurator;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -47,13 +45,12 @@ public class NetworkUtils {
         player.sendMessage(Theme.ERROR + "Direction: " + Theme.PASSIVE + "Successfully applied");
 
 
-        if (directional.getItemSlots().length > 0) {
-            for (int slot : directional.getItemSlots()) {
-                final ItemStack stackToDrop = blockMenu.getItemInSlot(slot);
-                if (stackToDrop != null && stackToDrop.getType() != Material.AIR) {
-                    blockMenu.getLocation().getWorld().dropItem(blockMenu.getLocation(), stackToDrop.clone());
-                    stackToDrop.setAmount(0);
-                }
+        directional.getItemSlots();
+        for (int slot : directional.getItemSlots()) {
+            final ItemStack stackToDrop = blockMenu.getItemInSlot(slot);
+            if (stackToDrop != null && stackToDrop.getType() != Material.AIR) {
+                blockMenu.getLocation().getWorld().dropItem(blockMenu.getLocation(), stackToDrop.clone());
+                stackToDrop.setAmount(0);
             }
         }
 

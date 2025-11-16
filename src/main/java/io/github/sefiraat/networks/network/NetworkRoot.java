@@ -10,11 +10,7 @@ import io.github.sefiraat.networks.network.barrel.NetworkStorage;
 import io.github.sefiraat.networks.network.stackcaches.BarrelIdentity;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import io.github.sefiraat.networks.network.stackcaches.QuantumCache;
-import io.github.sefiraat.networks.slimefun.network.NetworkCell;
-import io.github.sefiraat.networks.slimefun.network.NetworkDirectional;
-import io.github.sefiraat.networks.slimefun.network.NetworkGreedyBlock;
-import io.github.sefiraat.networks.slimefun.network.NetworkPowerNode;
-import io.github.sefiraat.networks.slimefun.network.NetworkQuantumStorage;
+import io.github.sefiraat.networks.slimefun.network.*;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import lombok.Getter;
@@ -23,18 +19,15 @@ import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Warning;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NetworkRoot extends NetworkNode {
@@ -114,7 +107,7 @@ public class NetworkRoot extends NetworkNode {
 
     private @Nullable Set<BarrelIdentity> inputAbleBarrels = null;
     private @Nullable Set<BarrelIdentity> outputAbleBarrels = null;
-    
+
     private @Nullable Map<Location, BarrelIdentity> mapInputAbleBarrels = null;
     private @Nullable Map<Location, BarrelIdentity> mapOutputAbleBarrels = null;
 
@@ -135,7 +128,7 @@ public class NetworkRoot extends NetworkNode {
             @NotNull NodeType type,
             int maxNodes,
             boolean recordFlow
-        ) {
+    ) {
         super(location, type);
         this.maxNodes = maxNodes;
         this.root = this;
@@ -433,7 +426,7 @@ public class NetworkRoot extends NetworkNode {
                 }
             }
         }
-        
+
         return itemStacks;
     }
 

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class HudCallbacks {
     private static final String EMPTY = "&7| Empty";
+
     public static void setup() {
         HudController controller = SlimeHUD.getHudController();
 

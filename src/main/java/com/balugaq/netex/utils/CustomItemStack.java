@@ -23,16 +23,14 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"deprecation", "unused"})
 @ApiStatus.Experimental
-public class CustomItemStack implements Cloneable {
-    private final @NotNull ItemStack delegate;
-
+public record CustomItemStack(@NotNull ItemStack delegate) implements Cloneable {
     /**
      * Creates a CustomItemStack from a Bukkit ItemStack.
      *
-     * @param item the Bukkit ItemStack to create from
+     * @param delegate the Bukkit ItemStack to create from
      */
-    public CustomItemStack(@NotNull ItemStack item) {
-        this.delegate = item.clone();
+    public CustomItemStack(@NotNull ItemStack delegate) {
+        this.delegate = delegate.clone();
     }
 
     /**
@@ -41,7 +39,7 @@ public class CustomItemStack implements Cloneable {
      * @param material the Material to create from
      */
     public CustomItemStack(@NotNull Material material) {
-        this.delegate = new ItemStack(material);
+        this(new ItemStack(material));
     }
 
     /**
@@ -51,7 +49,7 @@ public class CustomItemStack implements Cloneable {
      * @param itemMetaConsumer the consumer to modify the item metadata
      */
     public CustomItemStack(@NotNull ItemStack itemStack, @NotNull Consumer<ItemMeta> itemMetaConsumer) {
-        this.delegate = itemStack.clone();
+        this(itemStack.clone());
         Preconditions.checkNotNull(itemMetaConsumer, "ItemMeta consumer cannot be null");
         editItemMeta(itemMetaConsumer);
     }
@@ -177,7 +175,7 @@ public class CustomItemStack implements Cloneable {
      * @param amount    the amount of the item
      */
     public CustomItemStack(@NotNull ItemStack itemStack, @Range(from = 1, to = Integer.MAX_VALUE) int amount) {
-        this.delegate = itemStack.clone();
+        this(itemStack.clone());
         this.delegate.setAmount(amount);
     }
 
@@ -188,7 +186,7 @@ public class CustomItemStack implements Cloneable {
      * @param material  the Material of the item
      */
     public CustomItemStack(@NotNull ItemStack itemStack, @NotNull Material material) {
-        this.delegate = itemStack.clone();
+        this(itemStack.clone());
         this.delegate.setType(material);
     }
 
@@ -207,7 +205,8 @@ public class CustomItemStack implements Cloneable {
      *
      * @return the delegate Bukkit ItemStack
      */
-    public @NotNull ItemStack getDelegate() {
+    @Override
+    public @NotNull ItemStack delegate() {
         return delegate.clone();
     }
 
@@ -343,6 +342,6 @@ public class CustomItemStack implements Cloneable {
      */
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     public @NotNull CustomItemStack clone() {
-        return new CustomItemStack(getDelegate());
+        return new CustomItemStack(delegate());
     }
 }

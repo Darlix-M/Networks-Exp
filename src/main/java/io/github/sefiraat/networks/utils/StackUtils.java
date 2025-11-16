@@ -8,23 +8,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.Persis
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.AxolotlBucketMeta;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.BundleMeta;
-import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.inventory.meta.CrossbowMeta;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.FireworkEffectMeta;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SuspiciousStewMeta;
-import org.bukkit.inventory.meta.TropicalFishBucketMeta;
+import org.bukkit.inventory.meta.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -124,12 +108,9 @@ public class StackUtils {
         }
 
         // Finally, check the display name
-        if (itemMeta.hasDisplayName() && (!itemMeta.getDisplayName().equals(cachedMeta.getDisplayName()))) {
-            return false;
-        }
+        return !itemMeta.hasDisplayName() || (itemMeta.getDisplayName().equals(cachedMeta.getDisplayName()));
 
         // Everything should match if we've managed to get here
-        return true;
     }
 
 
@@ -148,7 +129,7 @@ public class StackUtils {
                 return true;
             }
 
-            if(!instanceOne.hasVariant() || !instanceTwo.hasVariant())
+            if (!instanceOne.hasVariant() || !instanceTwo.hasVariant())
                 return true;
 
             if (instanceOne.getVariant() != instanceTwo.getVariant()) {
@@ -318,9 +299,7 @@ public class StackUtils {
             if (!instanceOne.getBodyColor().equals(instanceTwo.getBodyColor())) {
                 return true;
             }
-            if (!instanceOne.getPatternColor().equals(instanceTwo.getPatternColor())) {
-                return true;
-            }
+            return !instanceOne.getPatternColor().equals(instanceTwo.getPatternColor());
         }
 
         // Cannot escape via any meta extension check

@@ -21,7 +21,10 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.CraftChunk;
@@ -36,8 +39,11 @@ import java.util.Set;
 
 public class NetworkControlV extends NetworkDirectional {
 
+    public static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
+            Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Paste items matching template"
+    );
     private static final int[] BACKGROUND_SLOTS = new int[]{
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 24, 26, 27, 28, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 24, 26, 27, 28, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
     };
     private static final int[] TEMPLATE_BACKGROUND = new int[]{16};
     private static final int TEMPLATE_SLOT = 25;
@@ -48,12 +54,7 @@ public class NetworkControlV extends NetworkDirectional {
     private static final int UP_SLOT = 14;
     private static final int DOWN_SLOT = 32;
     private static final int REQUIRED_POWER = 100;
-
     private final Set<BlockPosition> blockCache = new HashSet<>();
-
-    public static final ItemStack TEMPLATE_BACKGROUND_STACK = ItemCreator.create(
-        Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "Paste items matching template"
-    );
 
     public NetworkControlV(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe, NodeType.PASTER);
@@ -130,14 +131,13 @@ public class NetworkControlV extends NetworkDirectional {
 
         CraftBlock cb = (CraftBlock) targetBlock;
         LevelAccessor level = ((CraftBlock) targetBlock).getHandle();
-        CraftChunk chunk = (CraftChunk) cb.getChunk();
         BlockState bs = CraftMagicNumbers.getBlock(fetchedStack.getType()).defaultBlockState();
         LevelLightEngine engine = level.getLightEngine();
 
         this.blockCache.add(targetPosition);
         Bukkit.getScheduler().runTask(Networks.getInstance(), bukkitTask -> {
             level.getMinecraftWorld().removeBlockEntity(cb.getPosition());
-            level.getChunk(chunk.getX(), chunk.getZ()).setBlockState(cb.getPosition(), bs, true);
+            level.setBlock(cb.getPosition(), bs, 3);
             engine.checkBlock(cb.getPosition());
 
             if (SupportedPluginManager.getInstance().isMcMMO()) {
@@ -145,10 +145,10 @@ public class NetworkControlV extends NetworkDirectional {
             }
 
             ParticleUtils.displayParticleRandomly(
-                LocationUtils.centre(targetBlock.getLocation()),
-                Particle.ELECTRIC_SPARK,
-                1,
-                5
+                    LocationUtils.centre(targetBlock.getLocation()),
+                    Particle.ELECTRIC_SPARK,
+                    1,
+                    5
             );
         });
     }

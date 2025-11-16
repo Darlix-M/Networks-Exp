@@ -41,52 +41,49 @@ import java.util.Map;
 
 public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveItem {
 
-    private static final int[] SIZES = new int[]{
-        4096,
-        32768,
-        262144,
-        2097152,
-        16777216,
-        134217728,
-        1073741824,
-        Integer.MAX_VALUE
-    };
-
     public static final String BS_AMOUNT = "stored_amount";
     public static final String BS_VOID = "void_excess";
-
     public static final int INPUT_SLOT = 1;
     public static final int ITEM_SLOT = 4;
     public static final int ITEM_SET_SLOT = 13;
     public static final int OUTPUT_SLOT = 7;
-
+    private static final int[] SIZES = new int[]{
+            4096,
+            32768,
+            262144,
+            2097152,
+            16777216,
+            134217728,
+            1073741824,
+            Integer.MAX_VALUE
+    };
     private static final ItemStack BACK_INPUT = ItemCreator.create(
-        Material.GREEN_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Input"
+            Material.GREEN_STAINED_GLASS_PANE,
+            Theme.PASSIVE + "Input"
     );
 
     private static final ItemStack BACK_ITEM = ItemCreator.create(
-        Material.BLUE_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Item Stored"
+            Material.BLUE_STAINED_GLASS_PANE,
+            Theme.PASSIVE + "Item Stored"
     );
 
     private static final ItemStack NO_ITEM = ItemCreator.create(
-        Material.RED_STAINED_GLASS_PANE,
-        Theme.ERROR + "No Registered Item",
-        Theme.PASSIVE + "Click the icon below while",
-        Theme.PASSIVE + "holding an item to register it."
+            Material.RED_STAINED_GLASS_PANE,
+            Theme.ERROR + "No Registered Item",
+            Theme.PASSIVE + "Click the icon below while",
+            Theme.PASSIVE + "holding an item to register it."
     );
 
     private static final ItemStack SET_ITEM = ItemCreator.create(
-        Material.LIME_STAINED_GLASS_PANE,
-        Theme.SUCCESS + "Set Item",
-        Theme.PASSIVE + "Drag an item on top of this pane to register it.",
-        Theme.PASSIVE + "Shift Click to change voiding"
+            Material.LIME_STAINED_GLASS_PANE,
+            Theme.SUCCESS + "Set Item",
+            Theme.PASSIVE + "Drag an item on top of this pane to register it.",
+            Theme.PASSIVE + "Shift Click to change voiding"
     );
 
     private static final ItemStack BACK_OUTPUT = ItemCreator.create(
-        Material.ORANGE_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Output"
+            Material.ORANGE_STAINED_GLASS_PANE,
+            Theme.PASSIVE + "Output"
     );
 
     private static final int[] INPUT_SLOTS = new int[]{0, 2};
@@ -112,33 +109,132 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
         slotsToDrop.add(OUTPUT_SLOT);
     }
 
+    @ParametersAreNonnullByDefault
+    public static void tryInputItem(Location location, ItemStack[] input, QuantumCache cache) {
+        if (cache.getItemStack() == null) {
+            return;
+        }
+        for (ItemStack itemStack : input) {
+            if (isBlacklisted(itemStack)) {
+                continue;
+            }
+            if (StackUtils.itemsMatch(cache, itemStack, true)) {
+                int leftover = cache.increaseAmount(itemStack.getAmount());
+                itemStack.setAmount(leftover);
+            }
+        }
+        syncBlock(location, cache);
+    }
+
+    private static boolean isBlacklisted(@Nonnull ItemStack itemStack) {
+        return itemStack.getType() == Material.AIR
+                || itemStack.getType().getMaxDurability() < 0
+                || Tag.SHULKER_BOXES.isTagged(itemStack.getType())
+                || SlimefunItem.getByItem(itemStack) instanceof NetworkQuantumStorage;
+    }
+
+    @ParametersAreNonnullByDefault
+    @Nullable
+    public static ItemStack getItemStack(@Nonnull QuantumCache cache, @Nonnull BlockMenu blockMenu) {
+        if (cache.getItemStack() == null || cache.getAmount() <= 0) {
+            return null;
+        }
+        return getItemStack(cache, blockMenu, cache.getItemStack().getMaxStackSize());
+    }
+
+    @ParametersAreNonnullByDefault
+    @Nullable
+    public static ItemStack getItemStack(@Nonnull QuantumCache cache, @Nonnull BlockMenu blockMenu, int amount) {
+        if (cache.getAmount() < amount) {
+            // Storage has no content or not enough, mix and match!
+            ItemStack output = blockMenu.getItemInSlot(OUTPUT_SLOT);
+            ItemStack fetched = cache.withdrawItem(amount);
+
+            if (output != null
+                    && output.getType() != Material.AIR
+                    && StackUtils.itemsMatch(cache, output, true)
+            ) {
+                // We have an output item we can use also
+                if (fetched == null || fetched.getType() == Material.AIR) {
+                    // Storage is totally empty - just use output slot
+                    fetched = output.clone();
+                    if (fetched.getAmount() > amount) {
+                        fetched.setAmount(amount);
+                    }
+                    output.setAmount(output.getAmount() - fetched.getAmount());
+                } else {
+                    // Storage has content, lets add on top of it
+                    int additional = Math.min(amount - fetched.getAmount(), output.getAmount());
+                    output.setAmount(output.getAmount() - additional);
+                    fetched.setAmount(fetched.getAmount() + additional);
+                }
+            }
+            syncBlock(blockMenu.getLocation(), cache);
+            return fetched;
+        } else {
+            // Storage has everything we need
+            syncBlock(blockMenu.getLocation(), cache);
+            return cache.withdrawItem(amount);
+        }
+    }
+
+    private static void updateDisplayItem(@Nonnull BlockMenu menu, @Nonnull QuantumCache cache) {
+        if (cache.getItemStack() == null) {
+            menu.replaceExistingItem(ITEM_SLOT, NO_ITEM);
+        } else {
+            final ItemStack itemStack = cache.getItemStack().clone();
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            final List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+            lore.add("");
+            lore.add(Theme.CLICK_INFO + "Voiding: " + Theme.PASSIVE + StringUtils.toTitleCase(String.valueOf(cache.isVoidExcess())));
+            lore.add(Theme.CLICK_INFO + "Amount: " + Theme.PASSIVE + cache.getAmount());
+            itemMeta.setLore(lore);
+            itemStack.setItemMeta(itemMeta);
+            itemStack.setAmount(1);
+            menu.replaceExistingItem(ITEM_SLOT, itemStack);
+        }
+    }
+
+    private static void syncBlock(@Nonnull Location location, @Nonnull QuantumCache cache) {
+        BlockStorage.addBlockInfo(location, BS_AMOUNT, String.valueOf(cache.getAmount()));
+        BlockStorage.addBlockInfo(location, BS_VOID, String.valueOf(cache.isVoidExcess()));
+    }
+
+    public static Map<Location, QuantumCache> getCaches() {
+        return CACHES;
+    }
+
+    public static int[] getSizes() {
+        return SIZES;
+    }
+
     @Override
     public void preRegister() {
         addItemHandler(
-            new BlockTicker() {
-                @Override
-                public boolean isSynchronized() {
-                    return false;
-                }
+                new BlockTicker() {
+                    @Override
+                    public boolean isSynchronized() {
+                        return false;
+                    }
 
-                @Override
-                public void tick(Block b, SlimefunItem item, Config data) {
-                    onTick(b);
+                    @Override
+                    public void tick(Block b, SlimefunItem item, Config data) {
+                        onTick(b);
+                    }
+                },
+                new BlockBreakHandler(false, false) {
+                    @Override
+                    @ParametersAreNonnullByDefault
+                    public void onPlayerBreak(BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
+                        onBreak(event);
+                    }
+                },
+                new BlockPlaceHandler(false) {
+                    @Override
+                    public void onPlayerPlace(@Nonnull BlockPlaceEvent event) {
+                        onPlace(event);
+                    }
                 }
-            },
-            new BlockBreakHandler(false, false) {
-                @Override
-                @ParametersAreNonnullByDefault
-                public void onPlayerBreak(BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
-                    onBreak(event);
-                }
-            },
-            new BlockPlaceHandler(false) {
-                @Override
-                public void onPlayerPlace(@Nonnull BlockPlaceEvent event) {
-                    onPlace(event);
-                }
-            }
         );
     }
 
@@ -347,105 +443,6 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
     public int getMaxAmount() {
         return maxAmount;
-    }
-
-    @ParametersAreNonnullByDefault
-    public static void tryInputItem(Location location, ItemStack[] input, QuantumCache cache) {
-        if (cache.getItemStack() == null) {
-            return;
-        }
-        for (ItemStack itemStack : input) {
-            if (isBlacklisted(itemStack)) {
-                continue;
-            }
-            if (StackUtils.itemsMatch(cache, itemStack, true)) {
-                int leftover = cache.increaseAmount(itemStack.getAmount());
-                itemStack.setAmount(leftover);
-            }
-        }
-        syncBlock(location, cache);
-    }
-
-    private static boolean isBlacklisted(@Nonnull ItemStack itemStack) {
-        return itemStack.getType() == Material.AIR
-            || itemStack.getType().getMaxDurability() < 0
-            || Tag.SHULKER_BOXES.isTagged(itemStack.getType())
-            || SlimefunItem.getByItem(itemStack) instanceof NetworkQuantumStorage;
-    }
-
-    @ParametersAreNonnullByDefault
-    @Nullable
-    public static ItemStack getItemStack(@Nonnull QuantumCache cache, @Nonnull BlockMenu blockMenu) {
-        if (cache.getItemStack() == null || cache.getAmount() <= 0) {
-            return null;
-        }
-        return getItemStack(cache, blockMenu, cache.getItemStack().getMaxStackSize());
-    }
-
-    @ParametersAreNonnullByDefault
-    @Nullable
-    public static ItemStack getItemStack(@Nonnull QuantumCache cache, @Nonnull BlockMenu blockMenu, int amount) {
-        if (cache.getAmount() < amount) {
-            // Storage has no content or not enough, mix and match!
-            ItemStack output = blockMenu.getItemInSlot(OUTPUT_SLOT);
-            ItemStack fetched = cache.withdrawItem(amount);
-
-            if (output != null
-                && output.getType() != Material.AIR
-                && StackUtils.itemsMatch(cache, output, true)
-            ) {
-                // We have an output item we can use also
-                if (fetched == null || fetched.getType() == Material.AIR) {
-                    // Storage is totally empty - just use output slot
-                    fetched = output.clone();
-                    if (fetched.getAmount() > amount) {
-                        fetched.setAmount(amount);
-                    }
-                    output.setAmount(output.getAmount() - fetched.getAmount());
-                } else {
-                    // Storage has content, lets add on top of it
-                    int additional = Math.min(amount - fetched.getAmount(), output.getAmount());
-                    output.setAmount(output.getAmount() - additional);
-                    fetched.setAmount(fetched.getAmount() + additional);
-                }
-            }
-            syncBlock(blockMenu.getLocation(), cache);
-            return fetched;
-        } else {
-            // Storage has everything we need
-            syncBlock(blockMenu.getLocation(), cache);
-            return cache.withdrawItem(amount);
-        }
-    }
-
-    private static void updateDisplayItem(@Nonnull BlockMenu menu, @Nonnull QuantumCache cache) {
-        if (cache.getItemStack() == null) {
-            menu.replaceExistingItem(ITEM_SLOT, NO_ITEM);
-        } else {
-            final ItemStack itemStack = cache.getItemStack().clone();
-            final ItemMeta itemMeta = itemStack.getItemMeta();
-            final List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-            lore.add("");
-            lore.add(Theme.CLICK_INFO + "Voiding: " + Theme.PASSIVE + StringUtils.toTitleCase(String.valueOf(cache.isVoidExcess())));
-            lore.add(Theme.CLICK_INFO + "Amount: " + Theme.PASSIVE + cache.getAmount());
-            itemMeta.setLore(lore);
-            itemStack.setItemMeta(itemMeta);
-            itemStack.setAmount(1);
-            menu.replaceExistingItem(ITEM_SLOT, itemStack);
-        }
-    }
-
-    private static void syncBlock(@Nonnull Location location, @Nonnull QuantumCache cache) {
-        BlockStorage.addBlockInfo(location, BS_AMOUNT, String.valueOf(cache.getAmount()));
-        BlockStorage.addBlockInfo(location, BS_VOID, String.valueOf(cache.isVoidExcess()));
-    }
-
-    public static Map<Location, QuantumCache> getCaches() {
-        return CACHES;
-    }
-
-    public static int[] getSizes() {
-        return SIZES;
     }
 
     @Override

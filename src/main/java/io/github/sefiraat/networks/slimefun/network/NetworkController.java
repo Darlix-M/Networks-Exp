@@ -5,7 +5,6 @@ import io.github.sefiraat.networks.network.NetworkNode;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
-import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemSetting;
@@ -22,20 +21,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class NetworkController extends NetworkObject {
 
     private static final String CRAYON = "crayon";
     private static final Map<Location, NetworkRoot> NETWORKS = new HashMap<>();
     private static final Set<Location> CRAYONS = new HashSet<>();
-
-    private final ItemSetting<Integer> maxNodes;
     protected final Map<Location, Boolean> firstTickMap = new HashMap<>();
+    private final ItemSetting<Integer> maxNodes;
 
     public NetworkController(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe, NodeType.CONTROLLER);
@@ -44,37 +38,68 @@ public class NetworkController extends NetworkObject {
         addItemSetting(maxNodes);
 
         addItemHandler(
-            new BlockTicker() {
-                @Override
-                public boolean isSynchronized() {
-                    return false;
+                new BlockTicker() {
+                    @Override
+                    public boolean isSynchronized() {
+                        return false;
+                    }
+
+                    @Override
+                    public void tick(Block block, SlimefunItem item, Config data) {
+                        if (!firstTickMap.containsKey(block.getLocation())) {
+                            onFirstTick(block, data);
+                            firstTickMap.put(block.getLocation(), true);
+                        }
+
+                        addToRegistry(block);
+                        NetworkRoot networkRoot = new NetworkRoot(block.getLocation(), NodeType.CONTROLLER, maxNodes.getValue());
+                        networkRoot.addAllChildren();
+
+                        NodeDefinition definition = NetworkStorage.getAllNetworkObjects().get(block.getLocation());
+                        if (definition != null) {
+                            definition.setNode(networkRoot);
+                        }
+
+                        boolean crayon = CRAYONS.contains(block.getLocation());
+                        if (crayon) {
+                            networkRoot.setDisplayParticles(true);
+                        }
+
+                        NETWORKS.put(block.getLocation(), networkRoot);
+                    }
                 }
-
-                @Override
-                public void tick(Block block, SlimefunItem item, Config data) {
-                    if (!firstTickMap.containsKey(block.getLocation())) {
-                        onFirstTick(block, data);
-                        firstTickMap.put(block.getLocation(), true);
-                    }
-
-                    addToRegistry(block);
-                    NetworkRoot networkRoot = new NetworkRoot(block.getLocation(), NodeType.CONTROLLER, maxNodes.getValue());
-                    networkRoot.addAllChildren();
-
-                    NodeDefinition definition = NetworkStorage.getAllNetworkObjects().get(block.getLocation());
-                    if (definition != null) {
-                        definition.setNode(networkRoot);
-                    }
-
-                    boolean crayon = CRAYONS.contains(block.getLocation());
-                    if (crayon) {
-                        networkRoot.setDisplayParticles(true);
-                    }
-
-                    NETWORKS.put(block.getLocation(), networkRoot);
-                }
-            }
         );
+    }
+
+    public static Map<Location, NetworkRoot> getNetworks() {
+        return NETWORKS;
+    }
+
+    public static Set<Location> getCrayons() {
+        return CRAYONS;
+    }
+
+    public static void addCrayon(@Nonnull Location location) {
+        BlockStorage.addBlockInfo(location, CRAYON, String.valueOf(true));
+        CRAYONS.add(location);
+    }
+
+    public static void removeCrayon(@Nonnull Location location) {
+        BlockStorage.addBlockInfo(location, CRAYON, null);
+        CRAYONS.remove(location);
+    }
+
+    public static boolean hasCrayon(@Nonnull Location location) {
+        return CRAYONS.contains(location);
+    }
+
+    public static void wipeNetwork(@Nonnull Location location) {
+        NetworkRoot networkRoot = NETWORKS.remove(location);
+        if (networkRoot != null) {
+            for (NetworkNode node : networkRoot.getChildrenNodes()) {
+                NetworkStorage.removeNode(node.getNodePosition());
+            }
+        }
     }
 
     @Override
@@ -112,37 +137,6 @@ public class NetworkController extends NetworkObject {
         final String crayon = data.getString(CRAYON);
         if (Boolean.parseBoolean(crayon)) {
             CRAYONS.add(block.getLocation());
-        }
-    }
-
-    public static Map<Location, NetworkRoot> getNetworks() {
-        return NETWORKS;
-    }
-
-    public static Set<Location> getCrayons() {
-        return CRAYONS;
-    }
-
-    public static void addCrayon(@Nonnull Location location) {
-        BlockStorage.addBlockInfo(location, CRAYON, String.valueOf(true));
-        CRAYONS.add(location);
-    }
-
-    public static void removeCrayon(@Nonnull Location location) {
-        BlockStorage.addBlockInfo(location, CRAYON, null);
-        CRAYONS.remove(location);
-    }
-
-    public static boolean hasCrayon(@Nonnull Location location) {
-        return CRAYONS.contains(location);
-    }
-
-    public static void wipeNetwork(@Nonnull Location location) {
-        NetworkRoot networkRoot = NETWORKS.remove(location);
-        if (networkRoot != null) {
-            for (NetworkNode node : networkRoot.getChildrenNodes()) {
-                NetworkStorage.removeNode(node.getNodePosition());
-            }
         }
     }
 }
