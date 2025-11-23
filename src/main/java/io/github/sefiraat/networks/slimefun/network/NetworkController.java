@@ -12,6 +12,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -27,6 +28,7 @@ public class NetworkController extends NetworkObject {
 
     private static final String CRAYON = "crayon";
     private static final Map<Location, NetworkRoot> NETWORKS = new HashMap<>();
+    @Getter
     private static final Set<Location> CRAYONS = new HashSet<>();
     protected final Map<Location, Boolean> firstTickMap = new HashMap<>();
     private final ItemSetting<Integer> maxNodes;
@@ -73,10 +75,6 @@ public class NetworkController extends NetworkObject {
 
     public static Map<Location, NetworkRoot> getNetworks() {
         return NETWORKS;
-    }
-
-    public static Set<Location> getCrayons() {
-        return CRAYONS;
     }
 
     public static void addCrayon(@Nonnull Location location) {

@@ -43,7 +43,6 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
 
     private final String username;
     private final String repo;
-    private final String branch;
 
     private ListenerManager listenerManager;
     private SupportedPluginManager supportedPluginManager;
@@ -51,7 +50,6 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     public Networks() {
         this.username = "Sefiraat";
         this.repo = "Networks";
-        this.branch = "master";
     }
 
     @Nonnull
@@ -77,7 +75,7 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
 
         getLogger().info("########################################");
         getLogger().info("         Networks - By Sefiraat         ");
-        getLogger().info("     Changed by mmmjjkx and balugaq     ");
+        getLogger().info("           Changed by mmmjjkx           ");
         getLogger().info("########################################");
 
         saveDefaultConfig();
@@ -139,7 +137,7 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     }
 
     public void tryUpdate() {
-        if (getConfig().getBoolean("auto-update") && getDescription().getVersion().startsWith("Dev")) {
+        if (getConfig().getBoolean("auto-update") && getPluginMeta().getVersion().startsWith("Dev")) {
             new BlobBuildUpdater(this, getFile(), "Networks", "Dev").start();
         }
     }

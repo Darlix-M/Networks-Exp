@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("deprecation")
 public final class Utils {
 
     public static String color(String str) {
