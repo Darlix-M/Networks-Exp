@@ -150,8 +150,7 @@ public class NetworkQuantumWorkbench extends SlimefunItem {
                             oldCache.getItemStack().clone(),
                             oldCache.getAmount(),
                             newQuantum.getMaxAmount(),
-                            oldCache.isVoidExcess(),
-                            newQuantum.supportsCustomMaxAmount()
+                            oldCache.isVoidExcess()
                     );
                     DataTypeMethods.setCustom(newMeta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, newCache);
                     newCache.addMetaLore(newMeta);

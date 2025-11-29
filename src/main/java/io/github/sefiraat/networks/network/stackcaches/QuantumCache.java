@@ -14,7 +14,7 @@ public class QuantumCache extends ItemStackCache {
 
     @Nullable
     private final ItemMeta storedItemMeta;
-    private final boolean supportsCustomMaxAmount;
+    private final boolean supportsCustomMaxAmount = false;
     @Getter
     @Setter
     private int limit;
@@ -25,13 +25,12 @@ public class QuantumCache extends ItemStackCache {
     @Setter
     private boolean voidExcess;
 
-    public QuantumCache(@Nullable ItemStack storedItem, int amount, int limit, boolean voidExcess, boolean supportsCustomMaxAmount) {
+    public QuantumCache(@Nullable ItemStack storedItem, int amount, int limit, boolean voidExcess) {
         super(storedItem);
         this.storedItemMeta = storedItem == null ? null : storedItem.getItemMeta();
         this.amount = amount;
         this.limit = limit;
         this.voidExcess = voidExcess;
-        this.supportsCustomMaxAmount = supportsCustomMaxAmount;
     }
 
     @Nullable

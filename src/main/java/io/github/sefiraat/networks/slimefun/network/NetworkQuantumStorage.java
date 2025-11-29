@@ -578,7 +578,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
     private QuantumCache createCache(@Nullable ItemStack itemStack, @Nonnull BlockMenu menu, int amount, int maxAmount, boolean voidExcess, boolean supportsCustomMaxAmount) {
         if (itemStack == null || itemStack.getType() == Material.AIR || isDisplayItem(itemStack)) {
             menu.addItem(ITEM_SLOT, NO_ITEM);
-            return new QuantumCache(null, 0, maxAmount, true, this.supportsCustomMaxAmount);
+            return new QuantumCache(null, 0, maxAmount, true);
         } else {
             final ItemStack clone = itemStack.clone();
             final ItemMeta itemMeta = clone.getItemMeta();
@@ -593,7 +593,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
             itemMeta.setLore(lore.isEmpty() ? null : lore);
             clone.setItemMeta(itemMeta);
 
-            final QuantumCache cache = new QuantumCache(clone, amount, maxAmount, voidExcess, this.supportsCustomMaxAmount);
+            final QuantumCache cache = new QuantumCache(clone, amount, maxAmount, voidExcess);
 
             updateDisplayItem(menu, cache);
             return cache;

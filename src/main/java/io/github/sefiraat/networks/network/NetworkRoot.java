@@ -487,7 +487,7 @@ public class NetworkRoot extends NetworkNode {
     @NotNull
     public Set<BlockMenu> getCellMenus() {
         final Set<BlockMenu> menus = new HashSet<>();
-        for (Location cellLocation : this.cells) { // 看看这个cells， size = 0, fuck
+        for (Location cellLocation : this.cells) {
             BlockMenu menu = BlockStorage.getInventory(cellLocation);
             if (menu != null) {
                 menus.add(menu);
@@ -747,8 +747,7 @@ public class NetworkRoot extends NetworkNode {
         final Set<Location> addedLocations = ConcurrentHashMap.newKeySet();
         final Set<BarrelIdentity> barrelSet = ConcurrentHashMap.newKeySet();
 
-        final Set<Location> monitor = new HashSet<>();
-        monitor.addAll(this.monitors);
+        final Set<Location> monitor = new HashSet<>(this.monitors);
         for (Location cellLocation : monitor) {
             final BlockFace face = NetworkDirectional.getSelectedFace(cellLocation);
 
@@ -1133,19 +1132,17 @@ public class NetworkRoot extends NetworkNode {
             return;
         }
 
-        ItemStack beforeItemStack = null;
-        if (recordFlow) {
-            beforeItemStack = incoming.clone();
-        }
-
         int before = incoming.getAmount();
 
+        // true here
         Map<Location, Integer> m = getPersistentAccessHistory(accessor);
+
         if (m != null) {
             // Netex - Cache start
             boolean found = false;
             List<Location> misses = new ArrayList<>();
             // Netex - Cache end
+
             for (Map.Entry<Location, Integer> entry : m.entrySet()) {
                 BarrelIdentity barrelIdentity = accessInputAbleBarrel(entry.getKey());
                 if (barrelIdentity != null) {
@@ -1192,7 +1189,8 @@ public class NetworkRoot extends NetworkNode {
             }
 
             blockMenu.markDirty();
-            blockMenu.pushItem(incoming, GREEDY_BLOCK_AVAILABLE_SLOTS[0]);
+            BlockMenuUtil.pushItem(blockMenu, incoming, GREEDY_BLOCK_AVAILABLE_SLOTS[0]);
+
             // Netex - Reduce start
             uncontrolAccessInput(accessor);
             // Netex - Reduce end
@@ -1223,12 +1221,7 @@ public class NetworkRoot extends NetworkNode {
 
         for (BlockMenu blockMenu : getCellMenus()) {
             blockMenu.markDirty();
-            if (incoming.getAmount() == 0) {
-                break;
-            }
-
-            blockMenu.pushItem(incoming, CELL_AVAILABLE_SLOTS);
-            incoming.setAmount(0);
+            BlockMenuUtil.pushItem(blockMenu, incoming, CELL_AVAILABLE_SLOTS);
             if (incoming.getAmount() == 0) {
                 // Netex - Reduce start
                 uncontrolAccessInput(accessor);
