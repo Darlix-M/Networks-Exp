@@ -45,7 +45,6 @@ import java.util.*;
 
 @SuppressWarnings({"DuplicatedCode", "deprecation"})
 public abstract class NetworkDirectional extends NetworkObject {
-
     protected static final String DIRECTION = "direction";
     protected static final String OWNER_KEY = "uuid";
     private static final int NORTH_SLOT = 12;
