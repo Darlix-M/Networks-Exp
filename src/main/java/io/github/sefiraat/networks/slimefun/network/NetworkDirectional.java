@@ -43,6 +43,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
+@SuppressWarnings({"DuplicatedCode", "deprecation"})
 public abstract class NetworkDirectional extends NetworkObject {
 
     protected static final String DIRECTION = "direction";
@@ -277,7 +278,8 @@ public abstract class NetworkDirectional extends NetworkObject {
 
             @Override
             public boolean canOpen(@Nonnull Block block, @Nonnull Player player) {
-                return this.getSlimefunItem().canUse(player, false)
+                // Check whether the player can use this item and has protection permission.
+                return NetworkDirectional.this.canUse(player, false)
                         && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
@@ -308,7 +310,9 @@ public abstract class NetworkDirectional extends NetworkObject {
         if (targetMenu != null) {
             final Location location = targetMenu.getLocation();
             final SlimefunItem item = BlockStorage.check(location);
-            if (item.canUse(player, true)
+
+            if (item != null
+                    && item.canUse(player, true)
                     && Slimefun.getProtectionManager().hasPermission(player, blockMenu.getLocation(), Interaction.INTERACT_BLOCK)
             ) {
                 targetMenu.open(player);
