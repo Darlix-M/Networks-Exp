@@ -8,6 +8,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -18,6 +19,12 @@ public class SyncListener implements Listener {
     public void onBlockPlace(@Nonnull BlockPlaceEvent event) {
         NetworkUtils.clearNetwork(event.getBlock().getLocation());
     }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockBreak(@Nonnull BlockBreakEvent event) {
+        Location loc = event.getBlock().getLocation();
+        NetworkUtils.clearNetwork(loc);
+    }
+
 
     //Fixed a dupe
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

@@ -584,20 +584,26 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
         } else {
             final ItemStack clone = itemStack.clone();
             final ItemMeta itemMeta = clone.getItemMeta();
-            final List<String> lore = itemMeta.getLore();
-            for (int i = 0; i < 3; i++) {
-                if (lore != null && lore.size() == 0) {
-                    break;
+            
+            if (itemMeta.hasLore()) {
+                final List<String> originalLore = itemMeta.getLore();
+                if (originalLore != null && !originalLore.isEmpty()) {
+                    final List<String> cleanedLore = new ArrayList<>(originalLore);
+                    int uiLinesToRemove = supportsCustomMaxAmount ? 4 : 3;
+                    if (cleanedLore.size() >= uiLinesToRemove) {
+                        for (int i = 0; i < uiLinesToRemove; i++) {
+                            cleanedLore.remove(cleanedLore.size() - 1);
+                        }
+                    }
+                    if (cleanedLore.isEmpty()) {
+                        itemMeta.setLore(null);
+                    } else {
+                        itemMeta.setLore(cleanedLore);
+                    }
+                } else {
+                    itemMeta.setLore(null);
                 }
-                lore.remove(lore.size() - 1);
             }
-
-            if (supportsCustomMaxAmount) {
-                if (!lore.isEmpty()) {
-                    lore.remove(lore.size() - 1);
-                }
-            }
-            itemMeta.setLore(lore.isEmpty() ? null : lore);
             clone.setItemMeta(itemMeta);
 
             final QuantumCache cache = new QuantumCache(clone, amount, maxAmount, voidExcess);
