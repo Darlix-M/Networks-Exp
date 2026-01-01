@@ -1018,7 +1018,7 @@ public class NetworkRoot extends NetworkNode {
                 // If the return stack is null, we need to set it up
                 if (stackToReturn == null) {
                     stackToReturn = itemStack.clone();
-                    stackToReturn.setAmount(1);
+                    stackToReturn.setAmount(0);
                 }
 
                 if (request.getAmount() <= itemStack.getAmount()) {

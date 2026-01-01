@@ -69,7 +69,7 @@
     </properties>
 
     <build>
-        <finalName>${project.name} MODIFIED BY mmmjjkx ${project.version}</finalName>
+        <finalName>${project.name} Darlix ${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
